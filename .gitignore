@@ -209,3 +209,6 @@ __marimo__/
 # Dataset
 dataset/
 output/
+
+# Inspection output
+utils/inspection_output/
