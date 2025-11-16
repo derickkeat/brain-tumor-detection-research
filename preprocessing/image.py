@@ -24,8 +24,8 @@ def mat_to_jpg(file_path, output_folder):
         pid = ''.join(chr(x) for x in pid_array)
         
         # Extract image and label from cjdata structure
-        # Image is stored directly as a 512x512 array
-        im1 = np.array(cjdata['image'], dtype=np.float64)
+        # Image is stored directly as a 512x512 array, but we need to transpose it to get the correct orientation
+        im1 = np.array(cjdata['image'], dtype=np.float64).T
         
         # Normalize image to 0-255 range
         min1 = im1.min()
