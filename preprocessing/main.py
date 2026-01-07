@@ -8,7 +8,7 @@ from split import split_data, split_data_real_world_distribution
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Preprocess the data')
-    parser.add_argument('--real_world_distribution', action='store_true', help='Use real-world distribution split')
+    parser.add_argument('--rwd', action='store_true', help='Use real-world distribution (rwd) split')
     args = parser.parse_args()
 
     # Set your input and output paths
@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     # Split the data into train/val/test sets
     print('\nSplitting data into train/val/test sets...')
-    if args.real_world_distribution:
-        split_data_real_world_distribution(output_folder_images, output_folder_labels, '../output/balanced_btf/')  # 70% train, 10% val, 20% test
+    if args.rwd:
+        split_data_real_world_distribution(output_folder_images, output_folder_labels, '../output/btf_rwd/')  # 70% train, 10% val, 20% test
     else:
         split_data(output_folder_images, output_folder_labels, '../output/btf/', train_ratio=0.7, val_ratio=0.1)  # 70% train, 10% val, 20% test

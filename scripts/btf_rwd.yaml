@@ -1,0 +1,10 @@
+path: ../output/btf_rwd/
+
+train: train/images
+val: val/images
+test: test/images
+
+names:
+  0: meningioma
+  1: glioma
+  2: pituitary_tumor
