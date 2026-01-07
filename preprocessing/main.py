@@ -1,11 +1,16 @@
 import os
 import glob
+import argparse
 
 from image import mat_to_jpg
 from label import mat_to_yolo_label
-from split import split_data
+from split import split_data, split_data_real_world_distribution
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Preprocess the data')
+    parser.add_argument('--real_world_distribution', action='store_true', help='Use real-world distribution split')
+    args = parser.parse_args()
+
     # Set your input and output paths
     input_folders = ['../dataset/brainTumorDataPublic_1-766', '../dataset/brainTumorDataPublic_767-1532', '../dataset/brainTumorDataPublic_1533-2298', '../dataset/brainTumorDataPublic_2299-3064']
     output_folder_images = '../output/images/'
@@ -28,5 +33,7 @@ if __name__ == '__main__':
 
     # Split the data into train/val/test sets
     print('\nSplitting data into train/val/test sets...')
-    split_data(output_folder_images, output_folder_labels, '../output/btf/', 
-               train_ratio=0.7, val_ratio=0.1)  # 70% train, 10% val, 20% test
+    if args.real_world_distribution:
+        split_data_real_world_distribution(output_folder_images, output_folder_labels, '../output/balanced_btf/')  # 70% train, 10% val, 20% test
+    else:
+        split_data(output_folder_images, output_folder_labels, '../output/btf/', train_ratio=0.7, val_ratio=0.1)  # 70% train, 10% val, 20% test

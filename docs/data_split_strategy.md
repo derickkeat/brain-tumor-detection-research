@@ -71,15 +71,83 @@ Based on the current dataset split (executed on 2025-11-13):
 - **Separate test set** provides unbiased final evaluation  
 - **Documentation** of split methodology and results  
 
+## Real-World Distribution Split Method: Class-Balanced Patient Splitting
+
+An alternative splitting method that ensures balanced class distribution across splits using a greedy algorithm.
+
+### Overview
+
+The real-world distribution split method (`split_data_real_world_distribution`) distributes patients based on their primary tumor type to achieve target counts for each class in test and validation sets.
+
+### Target Distribution
+
+**Test Set Targets:**
+- Meningioma: 23 patients
+- Glioma: 14 patients
+- Pituitary Tumor: 10 patients
+
+**Validation Set Targets:**
+- Meningioma: 11 patients
+- Glioma: 7 patients
+- Pituitary Tumor: 5 patients
+
+**Training Set:**
+- All remaining patients (not assigned to test or val)
+
+### Algorithm
+
+1. **Shuffle patients** using fixed seed (42) for reproducibility
+2. **Determine primary tumor type** for each patient:
+   - Count tumors of each class (0=meningioma, 1=glioma, 2=pituitary_tumor) across all patient's label files
+   - Primary type is the class with the most tumors
+3. **Greedy assignment** (process patients in shuffled order):
+   - Try to add patient to **test set** first
+     - If adding would exceed target for patient's tumor type → skip test
+   - Try to add patient to **val set** next
+     - If adding would exceed target for patient's tumor type → skip val
+   - Add patient to **train set** (all remaining patients)
+
+### Implementation
+
+```python
+split_data_real_world_distribution(
+    image_path='path/to/images',
+    label_path='path/to/labels',
+    output_path='path/to/output'
+)
+```
+
+### Key Features
+
+- **Class-balanced splits**: Ensures specific number of patients per tumor type in test/val
+- **Patient-level splitting**: All images from same patient stay together
+- **Deterministic**: Uses fixed seed (42) for reproducibility
+- **Greedy approach**: Processes patients sequentially, filling test first, then val, then train
+
+### Use Cases
+
+Use the real-world distribution split method when:
+- You need balanced class distribution across splits
+- You have specific requirements for test/val set composition
+- You want to ensure sufficient representation of each tumor type in evaluation sets
+
+Use the ratio-based split method when:
+- You want a simple proportional split
+- Class balance is less critical
+- You prefer a more random distribution
+
 ## Notes for Future Work
 
 - If retraining or experimenting with different splits, always use the same seed (42) to maintain consistency
 - If you need a different split ratio, modify the `train_ratio` and `val_ratio` parameters in the function call
 - The test ratio is automatically calculated as: `1 - train_ratio - val_ratio`
 - Always verify that no patient IDs overlap between splits after any modifications
+- For real-world distribution split, adjust target counts in `split_data_real_world_distribution()` function if different class distribution is needed
 
 ## Related Files
 
 - Implementation: `preprocessing/split.py`
+  - `split_data()`: Ratio-based splitting
+  - `split_data_real_world_distribution()`: Class-balanced greedy splitting
 - Output directory: `output/` (or specified output path)
 
