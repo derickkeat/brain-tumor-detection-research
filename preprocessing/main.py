@@ -4,11 +4,12 @@ import argparse
 
 from image import mat_to_jpg
 from label import mat_to_yolo_label
-from split import split_data, split_data_real_world_distribution
+from split import split_data, split_data_real_world_distribution, split_data_preserve_distribution
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Preprocess the data')
     parser.add_argument('--rwd', action='store_true', help='Use real-world distribution (rwd) split')
+    parser.add_argument('--stratified', action='store_true', help='Use stratified split')
     args = parser.parse_args()
 
     # Set your input and output paths
@@ -35,5 +36,7 @@ if __name__ == '__main__':
     print('\nSplitting data into train/val/test sets...')
     if args.rwd:
         split_data_real_world_distribution(output_folder_images, output_folder_labels, '../output/btf_rwd/')  # 70% train, 10% val, 20% test
+    elif args.stratified:
+        split_data_preserve_distribution(output_folder_images, output_folder_labels, '../output/btf_stratified/', train_ratio=0.8, val_ratio=0.0)  # 70% train, 10% val, 20% test
     else:
         split_data(output_folder_images, output_folder_labels, '../output/btf/', train_ratio=0.7, val_ratio=0.1)  # 70% train, 10% val, 20% test
