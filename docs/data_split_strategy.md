@@ -3,6 +3,30 @@
 ## Overview
 This document describes the data splitting methodology used for the brain tumor detection project.
 
+## Dataset Distribution
+
+### Overall Tumor Type Distribution
+
+The dataset contains **3,064 tumors** across **3,064 label files** (one tumor per image):
+
+| Tumor Type           | Class ID | Count     | Percentage |
+|----------------------|----------|-----------|------------|
+| Meningioma           | 0        | 708       |  23.11%    |
+| Glioma               | 1        | 1,426     |  46.54%    |
+| Pituitary Tumor      | 2        | 930       |  30.35%    |
+| **Total**            |          | **3,064** |  **100%**  |
+
+### Balance Analysis
+
+- **Minimum tumor count:** 708 (Meningioma)
+- **Maximum tumor count:** 1,426 (Glioma)
+- **Average tumor count:** 1,021.33
+- **Imbalance ratio (max/min):** 2.01
+
+⚠️ **Note:** Significant class imbalance detected. Glioma is the most common tumor type (46.54%), while Meningioma is the least common (23.11%). Consider using class weights or data augmentation during training to address this imbalance.
+
+*Distribution calculated using `utils/inspect_tumor_distribution.py`*
+
 ## Split Method: Patient-Level Splitting
 
 **Important:** The dataset is split **by patient ID**, not by individual images. This means all images from the same patient remain together in the same split (train/val/test).
